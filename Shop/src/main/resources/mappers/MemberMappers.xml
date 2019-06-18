@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="members">
+	<insert id="insertmember" parameterType="com.nkt.shop.member.MemberDTO">
+		insert into member2
+		(idx,id,pw,name,email,phone)
+		values
+		(member_seq.nextval,#{id},#{pw},#{name},#{email},#{phone})
+	</insert>
+	<select id="selectAll" resultType="com.nkt.shop.member.MemberDTO">
+		select * from member2
+		order by idx desc
+	</select>
+	<select id="selectpage" 
+		resultType="com.nkt.shop.member.MemberDTO"
+		parameterType="com.nkt.shop.member.Page">
+		select * from ( select rownum rnum, b.* from (
+			select idx, id, name, email, phone from member2
+			order by idx desc ) b )
+		where rnum BETWEEN #{startrow} and #{endrow}
+	</select>
+	<select id="selectcount" resultType="java.lang.Integer">
+		select floor(TO_NUMBER(count(*)/10))+1 from member2
+	</select>
+	<select id="selectallnum" resultType="java.lang.Integer">
+		select count(*) as totalCount from member2
+	</select>
+	<select id="selectlogin" 
+		parameterType="com.nkt.shop.member.MemberDTO"
+		resultType="com.nkt.shop.member.MemberDTO">
+		select * from member2
+		where id = #{id} and pw = #{pw}
+	</select>
+</mapper>
